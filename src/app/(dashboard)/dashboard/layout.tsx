@@ -4,11 +4,13 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Boxes,
   FlaskConical,
   Home,
   LayoutDashboard,
   LogOut,
   Menu,
+  PackagePlus,
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
@@ -45,6 +47,16 @@ const NAV_ITEMS = [
     icon: LayoutDashboard,
   },
   {
+    title: "자산 현황 검색",
+    href: "/dashboard/assets",
+    icon: Boxes,
+  },
+  {
+    title: "신규 자산 등록",
+    href: "/dashboard/assets/new",
+    icon: PackagePlus,
+  },
+  {
     title: "환경 설정",
     href: "/dashboard/settings",
     icon: Settings,
@@ -71,7 +83,7 @@ export default function DashboardLayout({
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   return (
-    <div className="bg-muted/20 flex min-h-screen">
+    <div className="bg-muted/20 flex min-h-screen w-full overflow-x-hidden">
       {/* Desktop Sidebar */}
       <aside
         className={cn(
@@ -130,20 +142,21 @@ export default function DashboardLayout({
             )}
             aria-label={sidebarOpen ? "사이드바 접기" : "사이드바 펼치기"}
           >
-            {sidebarOpen ? (
-              <>
-                <PanelLeftClose className="size-4" />
-                <span>사이드바 접기</span>
-              </>
-            ) : (
-              <PanelLeftOpen className="size-4" />
-            )}
+            <PanelLeftClose
+              className={cn("size-4", !sidebarOpen && "hidden")}
+              aria-hidden="true"
+            />
+            <PanelLeftOpen
+              className={cn("size-4", sidebarOpen && "hidden")}
+              aria-hidden="true"
+            />
+            <span className={cn(!sidebarOpen && "sr-only")}>사이드바 접기</span>
           </Button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="bg-background/80 sticky top-0 z-30 flex h-16 items-center justify-between border-b px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -191,7 +204,11 @@ export default function DashboardLayout({
             <h1 className="text-base font-semibold sm:text-lg">
               {pathname === "/dashboard/settings"
                 ? "계정 및 환경 설정"
-                : "워크스페이스 대시보드"}
+                : pathname === "/dashboard/assets/new"
+                  ? "신규 자산 및 입출고 등록"
+                  : pathname === "/dashboard/assets"
+                    ? "자산 데이터 현황 검색"
+                    : "워크스페이스 대시보드"}
             </h1>
           </div>
 
@@ -243,7 +260,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="min-w-0 flex-1 p-3 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

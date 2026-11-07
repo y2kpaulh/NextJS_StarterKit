@@ -14,9 +14,11 @@
 
 ### 1.1 계약 및 스키마 우선 (Contract-First)
 - 입력 폼, API 페이로드, 상태 스토어의 데이터 구조는 구현 코드보다 먼저 정의합니다.
-- 위치:
-  - Zod 유효성 스키마: `src/lib/validations/*.ts`
-  - 전역 상태 스토어 인터페이스: `src/store/*.ts`
+- 위치 (`src/features/<domain>/` & `src/server/db/` 아키텍처):
+  - 도메인 Zod 유효성 스키마: `src/features/<domain>/schemas/*.ts`
+  - 도메인 데이터/집계, 상태 스토어 및 컴포넌트: `src/features/<domain>/data/*.ts`, `src/features/<domain>/store/*.ts`, `src/features/<domain>/components/*.tsx`
+  - 백엔드 DB 클라이언트 및 레포지토리: `src/server/db/client.ts`, `src/server/db/repositories/*.ts`
+  - 앱 전역 UI 상태 스토어: `src/store/use-app-store.ts`
   - 사이트 및 네비게이션 설정: `src/config/site.ts`
 
 ### 1.2 UI 컴포넌트 하네스 규칙 (`<StateHarness />`)

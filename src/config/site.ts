@@ -28,6 +28,16 @@ export const siteConfig = {
       icon: "layout-dashboard" as const,
     },
     {
+      title: "자산 현황 검색 (Assets)",
+      href: "/dashboard/assets",
+      icon: "boxes" as const,
+    },
+    {
+      title: "신규 자산 등록 (New Asset)",
+      href: "/dashboard/assets/new",
+      icon: "package-plus" as const,
+    },
+    {
       title: "컴포넌트 하네스",
       href: "/components",
       icon: "FlaskConical" as const,

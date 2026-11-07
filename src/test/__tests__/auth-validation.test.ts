@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  loginSchema,
-  profileSchema,
-  registerSchema,
-} from "@/lib/validations/auth";
+import { loginSchema, profileSchema, registerSchema } from "@/features/auth";
 
 describe("Auth & Profile Zod Validation Harness", () => {
   it("validates a correct login payload", () => {

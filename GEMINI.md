@@ -4,7 +4,7 @@
 
 ## 핵심 준수 사항 요약
 1. **No `tailwind.config` File**: Tailwind CSS v4 CSS-first 방식을 사용합니다. 모든 테마 확장은 `src/app/globals.css`의 `@theme inline`에서 수행합니다.
-2. **Schema First**: 폼과 데이터 모델은 `src/lib/validations/`에 Zod 스키마부터 작성합니다.
+2. **Feature-Sliced & Server/UI Separation**: 도메인 기능은 `src/features/<domain>/` 하위에 응집하며, `src/features/<domain>/schemas/`에 Zod 스키마부터 작성하고 루트 DB 스키마(`prisma/schema.prisma`) 및 백엔드 전용 레이어(`src/server/db/`)와 일관성을 유지합니다.
 3. **4-State UI Harness**: 데이터 기반 UI는 `normal`, `loading`, `empty`, `error` 4가지 상태를 모두 구현하고 `<StateHarness />`(`src/components/harness/state-harness.tsx`)로 격리 검증 가능해야 합니다.
 4. **Test Harness (`renderWithHarness`)**: 단위/통합 테스트는 `src/test/harness.tsx`의 `renderWithHarness()`를 사용하여 `src/test/__tests__/`에 작성합니다.
 5. **Verification Gate**: 모든 코드 변경 후 작업 종료 전 `npm run verify`를 실행하여 타입체크, 린트, 포맷, 테스트, 프로덕션 빌드가 모두 통과하는지 확인합니다.

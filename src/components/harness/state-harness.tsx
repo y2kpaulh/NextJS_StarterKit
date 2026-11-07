@@ -86,23 +86,23 @@ export function StateHarness({
       data-slot="state-harness"
       data-harness-state={activeState}
       className={cn(
-        "bg-card text-card-foreground overflow-hidden rounded-xl border shadow-xs",
+        "bg-card text-card-foreground w-full min-w-0 overflow-hidden rounded-xl border shadow-xs",
         className,
       )}
     >
       {showControls && (
-        <div className="bg-muted/40 flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5">
-          <div className="flex items-center gap-2">
+        <div className="bg-muted/40 flex flex-wrap items-center justify-between gap-2.5 border-b px-3 py-2.5 sm:px-4">
+          <div className="flex min-w-0 items-center gap-2">
             <Badge
               variant="outline"
-              className="bg-background gap-1.5 font-mono text-xs"
+              className="bg-background shrink-0 gap-1.5 font-mono text-xs"
             >
               <FlaskConical className="text-primary size-3.5" />
               HARNESS
             </Badge>
-            <span className="text-sm font-medium">{title}</span>
+            <span className="truncate text-sm font-medium">{title}</span>
             {description && (
-              <span className="text-muted-foreground hidden text-xs md:inline">
+              <span className="text-muted-foreground hidden truncate text-xs xl:inline">
                 — {description}
               </span>
             )}
@@ -110,7 +110,7 @@ export function StateHarness({
           <div
             role="group"
             aria-label="Harness state switcher"
-            className="bg-background inline-flex items-center gap-1 rounded-lg border p-1"
+            className="bg-background inline-flex flex-wrap items-center gap-1 rounded-lg border p-1"
           >
             {HARNESS_MODES.map((mode) => {
               const Icon = mode.icon;
@@ -134,7 +134,7 @@ export function StateHarness({
                       mode.value === "loading" && isActive && "animate-spin",
                     )}
                   />
-                  {mode.label}
+                  <span>{mode.label}</span>
                 </button>
               );
             })}
@@ -142,9 +142,11 @@ export function StateHarness({
         </div>
       )}
 
-      <div className="p-6">
+      <div className="min-w-0 p-3 sm:p-6">
         {activeState === "normal" && (
-          <div data-testid="harness-normal-view">{children}</div>
+          <div data-testid="harness-normal-view" className="min-w-0">
+            {children}
+          </div>
         )}
 
         {activeState === "loading" && (

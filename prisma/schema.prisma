@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  developer
+  designer
+  pm
+  admin
+}
+
+enum DeploymentEnvironment {
+  Production
+  Staging
+  Preview
+}
+
+enum DeploymentStatus {
+  Success
+  Review
+  Failed
+}
+
+enum AssetCategory {
+  LAPTOP
+  SERVER
+  PERIPHERAL
+  MOBILE
+  LICENSE
+}
+
+enum AssetStatus {
+  INBOUND
+  OUTBOUND
+  MAINTENANCE
+  DISPOSED
+}
+
+model User {
+  id              String       @id @default(cuid())
+  email           String       @unique
+  name            String
+  username        String?      @unique
+  bio             String?      @db.VarChar(160)
+  role            UserRole     @default(developer)
+  marketingEmails Boolean      @default(false)
+  securityEmails  Boolean      @default(true)
+  deployments     Deployment[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@map("users")
+}
+
+model Deployment {
+  id          String                @id @default(cuid())
+  displayId   String                @unique
+  service     String
+  environment DeploymentEnvironment @default(Production)
+  commit      String
+  status      DeploymentStatus      @default(Success)
+  authorId    String?
+  author      User?                 @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+  @@map("deployments")
+}
+
+model Asset {
+  id            String        @id @default(cuid())
+  assetCode     String        @unique
+  name          String
+  category      AssetCategory @default(LAPTOP)
+  status        AssetStatus   @default(INBOUND)
+  department    String
+  assignee      String
+  location      String
+  quantity      Int           @default(1)
+  purchasePrice Int           @default(0)
+  registeredAt  DateTime      @default(now())
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([registeredAt(sort: Desc)])
+  @@index([status])
+  @@map("assets")
+}
+
+

@@ -15,6 +15,14 @@
 3. **shadcn/ui & lucide-react**:
    - 기본 UI 프리미티브는 `src/components/ui/`에 위치하며, 아이콘은 `lucide-react`만 일관되게 사용합니다.
    - 클래스 병합 시 반드시 `src/lib/utils.ts`의 `cn()` 유틸리티를 사용합니다.
+4. **Prisma ORM & PostgreSQL**:
+   - 데이터베이스 스키마는 루트의 `prisma/schema.prisma`에서 단일 소스로 관리하며, Prisma Client는 반드시 서버 전용 레이어인 `src/server/db/client.ts`(`@/server/db`)의 글로벌 싱글톤(`db` / `prisma`)을 통해 접근합니다.
+   - DB에 저장·조회되는 도메인 데이터는 `src/features/<domain>/schemas/`에 Zod 스키마를 함께 정의하고, 백엔드 전용 레포지토리 계층(`src/server/db/repositories/`)을 통해 접근합니다.
+5. **Hybrid Feature-Sliced + Server/UI Separation 폴더 아키텍처**:
+   - **백엔드 전용 레이어 (`src/server/db/`)**: Prisma Client 싱글톤(`client.ts`)과 PostgreSQL 쿼리 레포지토리(`repositories/`)를 배치하여 서버 전용(Server-Only) 영역을 명확히 분리합니다.
+   - **도메인 기능 (`src/features/<domain>/`)**: 비즈니스 도메인(`assets`, `auth`, `deployments` 등)의 `schemas/`, `data/`, `store/`, `components/`를 한 폴더 안에 응집(Co-location)합니다.
+   - **라우트 셸 (`src/app/`)**: 라우팅, 레이아웃, API 엔드포인트(`api/`), 그리고 `src/features/*` 위젯 조합만 담당하며 무거운 폼·비즈니스 로직을 직접 포함하지 않습니다.
+   - **공통 레이어 (`src/components/`, `src/lib/`, `src/store/`)**: 도메인에 종속되지 않는 범용 UI(`ui/`, `layout/`, `harness/`, `providers/`), 공통 유틸리티(`utils.ts`), 앱 전역 UI 상태(`use-app-store.ts`)만 배치합니다.
 
 ---
 
@@ -23,7 +31,7 @@
 모든 신규 기능, 폼, 페이지, 컴포넌트 개발 시 아래 4단계를 순서대로 준수합니다:
 
 ### Step 1: Schema & Contract First (스키마 및 타입 우선 정의)
-- UI나 비즈니스 로직을 작성하기 전에 `src/lib/validations/`에 **Zod 스키마**를 정의하거나 `src/types/`에 **TypeScript 인터페이스**를 먼저 선언합니다.
+- UI나 비즈니스 로직을 작성하기 전에 `src/features/<domain>/schemas/`에 **Zod 스키마**를 정의하거나 도메인 타입을 먼저 선언합니다.
 - 폼 입력 데이터는 반드시 `z.infer<typeof schema>`를 통해 정적 타입과 런타임 검증을 단일 소스(Single Source of Truth)로 유지합니다.
 
 ### Step 2: 4-State UI Sandbox Harness (4-상태 UI 하네스 설계)
